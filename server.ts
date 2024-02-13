@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express"
 import { readdirSync, statSync } from "fs"
-import { join } from "path"
 
 const server = express()
 
@@ -8,10 +7,10 @@ export type Route = (req: Request, res: Response) => void
 
 const importRoutes = (root: string) => {
     readdirSync(root).forEach(file => {
-        const path = join(root, file)
+        const path = `${root}/${file}`
         if (statSync(path).isDirectory()) return importRoutes(path)
         if (!file.endsWith(".ts")) return
-        import(join(__dirname, path).slice(0, -3)).then(route => {
+        import(`./${path.slice(0, -3)}`).then(route => {
             const endpoint = path
                 .slice(3, -3)
                 .replace(/\[([^[\]]+)\]/g, ":$1")
