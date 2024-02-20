@@ -16,7 +16,8 @@ const importRoutes = (root: string) => {
                 .replace(/\[([^[\]]+)\]/g, ":$1")
                 .replace(/\/index$/g, "") || "/"
             Object.entries(route).forEach(([method, handler]) => {
-                server[method.toLowerCase()](endpoint, handler)
+                if (!(method.toLowerCase() in server)) return
+                server[method.toLowerCase() as keyof typeof server](endpoint, handler)
                 console.log(`${method} ${endpoint}`)
             })
         })
