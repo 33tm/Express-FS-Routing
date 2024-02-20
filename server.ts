@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express"
+import express, { Request, Response, json } from "express"
 import { readdirSync, statSync } from "fs"
 
 const server = express()
@@ -16,7 +16,6 @@ const importRoutes = (root: string) => {
                 .replace(/\[([^[\]]+)\]/g, ":$1")
                 .replace(/\/index$/g, "") || "/"
             Object.entries(route).forEach(([method, handler]) => {
-                if (!["GET", "POST", "PUT", "PATCH", "DELETE"].includes(method)) return
                 server[method.toLowerCase()](endpoint, handler)
                 console.log(`${method} ${endpoint}`)
             })
@@ -25,5 +24,7 @@ const importRoutes = (root: string) => {
 }
 
 importRoutes("src")
+
+server.use(json())
 
 server.listen(443, () => console.log("Server started"))
